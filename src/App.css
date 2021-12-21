@@ -32,3 +32,20 @@ address{
 .navbar-dark {
     background-color: #512DA8;
 }
+.blockquote-footer{
+    padding-top: 20px;
+}
+.media{
+    display: flex;
+}
+.media-left {
+    padding-right: 30px;
+}
+#button-nav{
+    color: white;
+    border-color: white;
+}
+.navbar-nav{
+    justify-content: right;
+    width: 100%;
+}
