@@ -49,3 +49,6 @@ address{
     justify-content: right;
     width: 100%;
 }
+.form-group{
+    padding: 5px;
+}
