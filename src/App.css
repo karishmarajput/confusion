@@ -52,3 +52,7 @@ address{
 .form-group{
     padding: 5px;
 }
+#commentBtn{
+    background-color: white;
+    color: grey;
+}
