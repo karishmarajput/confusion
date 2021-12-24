@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import Moment from 'moment';
 import { Card, CardImg, CardText, CardBody,CardTitle, Breadcrumb, BreadcrumbItem,
-   Button, Modal, ModalHeader, ModalBody,Row,Col,
-  Form, FormGroup, Input, Label  } from 'reactstrap';
+   Button, Modal, ModalHeader, ModalBody,Row,Col, Label} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
+import { Loading } from './LoadingComponent';
+
 
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => val && (val.length >= len);
@@ -21,7 +22,7 @@ function RenderDish({dish}){
       
     );
 }
-function RenderComments({comments}){
+function RenderComments({comments, addComment, dishId}){
   const comment = comments.map((comm) => {
         return(        
           <div key={comm.id} style={{width:'100%'}}>
@@ -50,13 +51,31 @@ function RenderComments({comments}){
         </div>
       <div className="row">
           {comment}
-          <CommentForm/>
+          <CommentForm dishId={dishId} addComment={addComment} />
       </div>
     </div>
   );
 }
 const Dishdetail = (props) =>{
-    if(props.dish != null){
+    if (props.isLoading) {
+        return(
+            <div className="container">
+                <div className="row">            
+                    <Loading />
+                </div>
+            </div>
+        );
+    }
+    else if (props.errMess) {
+        return(
+            <div className="container">
+                <div className="row">            
+                    <h4>{props.errMess}</h4>
+                </div>
+            </div>
+        );
+    }
+    else if (props.dish != null) {
       return (
         <div className="container">
           <div className="row">
@@ -74,7 +93,11 @@ const Dishdetail = (props) =>{
               <RenderDish dish={props.dish} />
             </div>
             <div className="col-12 col-md-5 m-1">
-              <RenderComments comments={props.comments} />
+              
+              <RenderComments comments={props.comments}
+                addComment={props.addComment}
+                dishId={props.dish.id}
+              />
              
             </div> 
           </div>
@@ -102,9 +125,9 @@ class CommentForm extends Component{
   }
   handleSubmit(values) {
     this.toggleModal();
-    console.log('Current State is: ' + JSON.stringify(values));
-    alert('Current State is: ' + JSON.stringify(values));
-    // event.preventDefault();
+    
+    this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+  
   }
 
   render(){
@@ -128,9 +151,9 @@ class CommentForm extends Component{
                             </Col>
                         </Row>
                         <Row className="form-group">
-                                <Label htmlFor="name" > Your Name</Label>
+                                <Label htmlFor="author" > Your Name</Label>
                                 <Col>
-                                    <Control.text model=".name" id="name" name="name"
+                                    <Control.text model=".author" id="author" name="author"
                                         placeholder="Your Name"
                                         className="form-control"
                                         validators={{
@@ -139,7 +162,7 @@ class CommentForm extends Component{
                                          />
                                     <Errors
                                         className="text-danger"
-                                        model=".name"
+                                        model=".author"
                                         show="touched"
                                         messages={{
                                             
